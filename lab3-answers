@@ -1,0 +1,133 @@
+sudo mysql;
+use ITI;
+
+1-
+begin;
+
+insert into student values ('doaa', 'Asyut', 'doaa@gmail.com', 'female', '1995-01-05', 'makhlouf');
+
+savepoint studentinserted;
+
+insert into student_study_subject values ('doaa@gmail.com', 'Linux administration 1'), ('doaa@gmail.com', 'PHP');
+
+insert into student_takeexam_subject values ('doaa@gmail.com', 'Linux administration 1', 50, '2024-07-15'), ('doaa@gmail.com', 'PHP', 140, '2024-09-05');
+
+commit;
+
+--------------------------------------------------------------------
+2-
+select subjectname, concat(day(date),' ',monthname(date),' ',year(date)) from student_takeexam_subject;
+
+--------------------------------------------------------------------
+3-
+select firstname, lastname, (year(now()) - year(birth_date)) as age_in_years from student;
+
+--------------------------------------------------------------------
+4-
+--> update some scores to test rounding functions
+update student_takeexam_subject set score = 97.5 where email = 'maria@gmail.com'; 
+
+update student_takeexam_subject set score = 140.33 where email = 'doaa@gmail.com' && subjectname = 'PHP';
+
+select student.firstname, student.lastname, ceiling(student_takeexam_subject.score) as rounded_score from student, student_takeexam_subject where student_takeexam_subject.email = 'doaa@gmail.com' && student_takeexam_subject.subjectname = 'PHP' && student_takeexam_subject.email = student.email;
+
+select student.firstname, student.lastname, floor(student_takeexam_subject.score) as rounded_score from student, student_takeexam_subject where student_takeexam_subject.email = 'maria@gmail.com' && student_takeexam_subject.email = student.email;
+
+--------------------------------------------------------------------
+5-
+select firstname, lastname, year(birth_date) from student;
+
+--------------------------------------------------------------------
+6-
+--> insert new data to test now function
+insert into student_study_subject values ('aser@gmail.com', 'Linux administration 1');
+
+select * from student_takeexam_subject where subjectname = 'Linux administration 1';
+
+--------------------------------------------------------------------
+7-
+--> create function in /tmp/lab3-functions.sql
+
+source /tmp/lab3-functions.sql;
+
+select hello_world('doaa');
+
+--------------------------------------------------------------------
+8-
+--> create function in /tmp/lab3-functions.sql
+
+source /tmp/lab3-functions.sql;
+
+select multiplication(2, 4);
+
+--------------------------------------------------------------------
+9-
+--> create function in /tmp/lab3-functions.sql
+
+source /tmp/lab3-functions.sql;
+
+select score('doaa@gmail.com', 'PHP');
+
+--------------------------------------------------------------------
+10-
+--> create function in /tmp/lab3-functions.sql
+
+source /tmp/lab3-functions.sql;
+
+select fail('Linux administration 1');
+
+--------------------------------------------------------------------
+11-
+--> create function in /tmp/lab3-functions.sql
+
+source /tmp/lab3-functions.sql;
+
+select score_average('database');
+
+--------------------------------------------------------------------
+12-
+create table deleted_students (firstname varchar(100), address
+varchar(100), email varchar(100) primary key, gender varchar(10), birth_date date, lastname varchar(100));
+
+--------------------------------------------------------------------
+13-
+--> create trigger in /tmp/lab3-functions.sql
+
+source /tmp/lab3-functions.sql;
+
+delete from student where email = 'doaa@gmail.com';
+
+select * from deleted_students;
+
+--------------------------------------------------------------------
+14-
+create table backup_students (firstname varchar(100), address varchar(100), email varchar(100) primary key, gender varchar(10), birth
+_date date, lastname varchar(100));
+
+--> create trigger in /tmp/lab3-functions.sql
+
+source /tmp/lab3-functions.sql;
+
+insert into student values ('doaa', 'Asyut', 'doaa@gmail.com',
+'female', '1995-01-05', 'makhlouf');
+
+select * from backup_students;
+
+--------------------------------------------------------------------
+16-
+sudo mysqldump -u root -p ITI > /home/doaa/Desktop/ITI/mysql/Day3/lab/ITI.sql
+
+--------------------------------------------------------------------
+17-
+sudo mysqldump -u root -p ITI student > /home/doaa/Desktop/ITI/mysql/Day3/lab/student.sql
+
+--------------------------------------------------------------------
+18-
+create database ITI_backup;
+\q
+mysql -u root -p ITI_backup < ITI_backup.sql
+mysql -u root -p
+use ITI_backup;
+show tables;
+
+
